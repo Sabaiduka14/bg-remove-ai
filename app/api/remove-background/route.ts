@@ -14,9 +14,7 @@ export async function POST(request: Request) {
       credentials: process.env.FAL_KEY,
     })
 
-    console.log('Image data received:', image.slice(0, 100) + '...'); // Log the first 100 characters of the image data
-
-    if (!image.startsWith('data:image')) {
+    if (!image || typeof image !== 'string' || !image.startsWith('data:image')) {
       console.error('Invalid image data received');
       return NextResponse.json({ error: 'Invalid image data', details: 'Image data must be a valid Data URL' }, { status: 422 })
     }
@@ -27,11 +25,11 @@ export async function POST(request: Request) {
         image_url: image,
       },
     })
-    console.log('fal.ai API call successful', result)
+    console.log('fal.ai API call successful')
 
     return NextResponse.json(result)
   } catch (error) {
-    console.error('Detailed error:', JSON.stringify(error, Object.getOwnPropertyNames(error)));
-    return NextResponse.json({ error: 'Failed to remove background', }, { status: 500 })
+    console.error('Detailed error:', error instanceof Error ? error.message : String(error));
+    return NextResponse.json({ error: 'Failed to remove background' }, { status: 500 })
   }
 }
