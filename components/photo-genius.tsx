@@ -17,7 +17,7 @@ export function PhotoGenius() {
       const reader = new FileReader()
       reader.onload = (e: ProgressEvent<FileReader>) => {
         const img = new Image()
-        img.onload = (event: Event) => {
+        img.onload = () => {
           const canvas = document.createElement('canvas')
           const ctx = canvas.getContext('2d')
           if (ctx) {
