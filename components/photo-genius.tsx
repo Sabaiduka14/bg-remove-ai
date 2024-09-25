@@ -2,7 +2,7 @@
 import React, { useState, useRef } from 'react'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Upload, Download, Maximize, X, Image, HelpCircle, FileImage } from "lucide-react"
+import { Upload, Download, Maximize, X, Image as ImageIcon, HelpCircle, FileImage } from "lucide-react"
 
 export function PhotoGenius() {
   const [originalImage, setOriginalImage] = useState<string | null>(null)
@@ -16,7 +16,7 @@ export function PhotoGenius() {
     if (file) {
       const reader = new FileReader()
       reader.onload = (e: ProgressEvent<FileReader>) => {
-        const img = new HTMLImageElement()
+        const img = document.createElement('img')  
         img.onload = () => {
           const canvas = document.createElement('canvas')
           const ctx = canvas.getContext('2d')
@@ -102,7 +102,7 @@ export function PhotoGenius() {
       <header className="bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
           <h1 className="text-xl flex items-center gap-1 font-semibold">
-            <Image className='w-6 h-6 relative -top-[1px]' />Photo Genius
+            <ImageIcon className='w-6 h-6 relative -top-[1px]' />Photo Genius
           </h1>
           <Button variant="outline" className='flex items-center gap-[5px]'>Help<HelpCircle className='w-4 h-4' /></Button>
         </div>
