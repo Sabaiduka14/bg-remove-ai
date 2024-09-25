@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import * as fal from "@fal-ai/serverless-client"
 
-export async function POST(request) {
+export async function POST(request: Request) {
   try {
     const { image } = await request.json()
 
@@ -32,6 +32,6 @@ export async function POST(request) {
     return NextResponse.json(result)
   } catch (error) {
     console.error('Detailed error:', JSON.stringify(error, Object.getOwnPropertyNames(error)));
-    return NextResponse.json({ error: 'Failed to remove background', details: error.message }, { status: 500 })
+    return NextResponse.json({ error: 'Failed to remove background', }, { status: 500 })
   }
 }

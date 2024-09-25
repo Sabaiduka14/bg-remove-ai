@@ -1,42 +1,43 @@
 'use client'
-
 import React, { useState, useRef } from 'react'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Upload, Download, Maximize, X, Image, HelpCircle, FileImage } from "lucide-react"
-import { ReloadIcon } from '@radix-ui/react-icons'
 
 export function PhotoGenius() {
-  const [originalImage, setOriginalImage] = useState(null)
-  const [processedImage, setProcessedImage] = useState(null)
-  const [isLoading, setIsLoading] = useState(false)
-  const fileInputRef = useRef(null)
-  const [isFullScreen, setIsFullScreen] = useState(false)
+  const [originalImage, setOriginalImage] = useState<string | null>(null)
+  const [processedImage, setProcessedImage] = useState<string | null>(null)
+  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  const [isFullScreen, setIsFullScreen] = useState<boolean>(false)
 
-  const handleImageUpload = (event) => {
-    const file = event.target.files[0]
+  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
     if (file) {
       const reader = new FileReader()
-      reader.onload = (e) => {
+      reader.onload = (e: ProgressEvent<FileReader>) => {
         const img = new Image()
-        img.onload = () => {
+        img.onload = (event: Event) => {
           const canvas = document.createElement('canvas')
           const ctx = canvas.getContext('2d')
-          canvas.width = img.width
-          canvas.height = img.height
-          ctx.drawImage(img, 0, 0)
-          const dataUrl = canvas.toDataURL('image/jpeg')
-          setOriginalImage(dataUrl)
+          if (ctx) {
+            canvas.width = img.width
+            canvas.height = img.height
+            ctx.drawImage(img, 0, 0)
+            const dataUrl = canvas.toDataURL('image/jpeg')
+            setOriginalImage(dataUrl)
+          }
         }
-        img.src = e.target.result
+        img.src = e.target?.result as string
       }
       reader.readAsDataURL(file)
     }
   }
 
   const triggerFileInput = () => {
-    fileInputRef.current.click()
+    fileInputRef.current?.click()
   }
+
   const removeBackground = async () => {
     if (!originalImage) return
 
@@ -56,15 +57,15 @@ export function PhotoGenius() {
       const result = await response.json()
       console.log('API response:', result);
 
-      // Update this line to use the correct path to the image URL
       setProcessedImage(result.image.url)
     } catch (error) {
       console.error('Detailed error removing background:', error);
-      alert(`Failed to remove background. Error: ${error.message}`);
+      alert(`Failed to remove background. Error: ${error instanceof Error ? error.message : 'Unknown error'}`);
     } finally {
       setIsLoading(false)
     }
   }
+
   const downloadImage = async () => {
     if (processedImage) {
       try {
@@ -174,7 +175,6 @@ export function PhotoGenius() {
             </Button>
           </CardFooter>
 
-          {/* Full Screen Modal */}
           {isFullScreen && processedImage && (
             <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
               <div className="relative max-w-4xl max-h-screen w-full h-full">
